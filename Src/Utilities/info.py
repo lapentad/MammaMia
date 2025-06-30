@@ -49,6 +49,10 @@ def get_info_tmdb(tmbda,ismovie,type):
             date = show.first_air_date
             date = date.split("-")[0]
             return showname,date
+        elif type == "Guardaserie":
+            date = show.first_air_date
+            date = date.split("-")[0]
+            return showname,date
     
     elif ismovie == 1:
         movie = Movie()
@@ -121,6 +125,14 @@ async def get_info_imdb(imdb_id, ismovie, type,client):
             date = data['tv_results'][0]['first_air_date']
             date = date.split("-")[0]
             return showname,date
+        elif type == "Onlineserietv":
+            date = data['tv_results'][0]['first_air_date']
+            date = date.split("-")[0]
+            return showname,date
+        elif type == "Guardaserie":
+            date = data['tv_results'][0]['first_air_date'] 
+            date = date.split("-")[0]
+            return showname,date
 
     elif ismovie == 1:
         showname= data['movie_results'][0]['title']
@@ -148,13 +160,20 @@ async def get_info_imdb(imdb_id, ismovie, type,client):
             date = data['movie_results'][0]['release_date']
             date = date.split("-")[0]
             return showname,date
+        elif type == "Onlineserietv":
+            date = data['movie_results'][0]['release_date']
+            date = date.split("-")[0]
+            return showname,date
 
 
 async def get_info_kitsu(kitsu_id,client):
     api_url = f'https://kitsu.io/api/edge/anime/{kitsu_id}'
     response = await client.get(api_url)
     data = json.loads(response.text)
-    showname = data['data']['attributes']['canonicalTitle']
+    try:
+        showname = data['data']['attributes']['titles']['en']
+    except Exception as e:
+        showname = data['data']['attributes']['canonicalTitle']
     date = data['data']['attributes']['startDate']
     return showname,date           
 
